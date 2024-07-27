@@ -87,10 +87,12 @@
                                             <td>{{ $data->nip }}</td>
                                             <td>{{ $data->email }}</td>
                                             <td>
-                                                <a href="{{ route('datadosen.ubahstatus', $data->id) }}"
-                                                    class="btn btn-sm btn-{{ $data->status == 1 ? 'success' : 'danger' }}">
-                                                    {{ $data->status == 1 ? 'Aktif' : 'Non-Aktif' }}
-                                                </a>
+                                                <label class="switch">
+                                                    <input type="checkbox" class="toggle-status"
+                                                        data-id="{{ $data->id }}"
+                                                        {{ $data->status == 1 ? 'checked' : '' }}>
+                                                    <span class="slider round"></span>
+                                                </label>
                                             </td>
                                             <td class="text-center">
                                                 <!-- Button Edit -->
@@ -182,11 +184,60 @@
     </div>
 @endsection
 
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 20px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked+.slider {
+        background-color: #4CAF50;
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(14px);
+    }
+</style>
+
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
     <script>
         $(document).ready(function() {
             var table = $('#basic-table').DataTable({
@@ -240,6 +291,37 @@
                         });
                     });
                 }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('.toggle-status').change(function() {
+                var id = $(this).data('id');
+                var status = $(this).prop('checked') ? 1 : 0;
+
+                $.ajax({
+                    url: '{{ route('datadosen.ubahstatus', '') }}/' + id,
+                    method: 'GET',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        status: status
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Berhasil!',
+                            'Status Dosen berhasil diubah.',
+                            'success'
+                        );
+                    },
+                    error: function(response) {
+                        Swal.fire(
+                            'Gagal!',
+                            'Terjadi kesalahan saat mengubah status.',
+                            'error'
+                        );
+                    }
+                });
             });
         });
     </script>

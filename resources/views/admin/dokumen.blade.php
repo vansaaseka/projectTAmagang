@@ -67,6 +67,9 @@
                                             <button type="button" class="btn btn-primary btn-sm edit-btn"
                                                 data-toggle="modal" data-target="#UploadFileModal{{ $data->id }}"
                                                 data-id="{{ $data->id }}"><i class="fas fa-sm fa-edit "></i></button>
+                                        @elseif (optional($data->buktimagangs)->jawaban === 'diterima')
+                                            <a href="{{ route('export.docx.tugas', ['id' => $data->id]) }}"
+                                                class="btn btn-info btn-sm">Download</a>
                                         @endif
                                         <!-- Modal Detail -->
                                         <div class="modal fade" id="detailModal{{ $data->id }}" tabindex="-1"

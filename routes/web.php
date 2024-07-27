@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataAjuanMahasiswaController;
 use App\Http\Controllers\DataBuktiController;
 use App\Http\Controllers\DataSelesaiMagangController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ManajemenUser\AdminController;
 use App\Http\Controllers\ManajemenUser\CDCController;
 use App\Http\Controllers\ManajemenUser\DekanatController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\ManajemenUser\DosenController;
 use App\Http\Controllers\ManajemenUser\MahasiswaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SelesaiMagangController;
+use App\Http\Controllers\TamplateController;
 use App\Http\Controllers\UnitController;
 use App\Models\AjuanMagang;
 use Illuminate\Auth\Events\Logout;
@@ -99,6 +101,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ubahstatus/{id}', [AdminController::class, "ubahstatus"])->name('ubahstatus');
     });
 
+    Route::prefix('/template',)->name('tamplate.')->group(function() {
+        Route::get('/', [TamplateController::class, 'index'])->name('index');
+        Route::put('/update/{id}', [TamplateController::class, 'update'])->name('update');
+    });
+
     //Dekanat
     Route::prefix('/datadekanat')->name('datadekanat.')->group(function () {
         Route::get('/', [DekanatController::class, 'index'])->name('index');
@@ -155,3 +162,10 @@ Route::prefix('/cetakdata')->name('cetakdata.')->group(function () {
     Route::get('/', [CetakDataController::class, 'index'])->name('index');
     Route::get('/export-dataajuan', [CetakDataController::class, 'export'])->name('export.dataajuan');
 });
+
+    Route::get('/get-categories', [AjuanMagangController::class, 'getCategories']);
+    Route::get('/get-instansi', [AjuanMagangController::class, 'getInstansi']);
+
+
+    Route::get('/pengantar/export-docx/{id}', [DataAjuanMahasiswaController::class, 'exportDocxPengantar'])->name('export.docx.pengantar');
+    Route::get('/tugas/export-docx/{id}', [DataAjuanMahasiswaController::class, 'exportDocxTugas'])->name('export.docx.tugas');

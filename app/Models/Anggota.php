@@ -17,7 +17,7 @@ class Anggota extends Model
 
     public function ajuanmagangs()
     {
-        return $this->belongsToMany(Ajuanmagang::class, 'kelompok', 'id_anggota', 'id_ajuan_magang');
+        return $this->belongsToMany(Ajuanmagang::class, 'kelompoks', 'id_anggota', 'id_ajuan_magang');
     }
 
 }

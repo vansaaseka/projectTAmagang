@@ -9,7 +9,9 @@ class KategoriInstansi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama_kategori'];
+    protected $table = 'kategori_instansis';
+
+    protected $fillable = ['nama_kategori', 'user_id'];
 
     public function instansis()
     {

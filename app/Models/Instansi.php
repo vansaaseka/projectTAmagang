@@ -14,7 +14,8 @@ class Instansi extends Model
         'kategori_instansi_id',
         'no_telpon',
         'alamat_surat',
-        'alamat_instansi'
+        'alamat_instansi',
+        'user_id'
     ];
 
     public function kategoriInstansi()

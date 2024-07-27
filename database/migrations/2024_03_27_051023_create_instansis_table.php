@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('no_telpon');
             $table->string('alamat_surat');
             $table->string('alamat_instansi');
+            $table->integer('user_id')->nullable();
             $table->timestamps();
         });
     }

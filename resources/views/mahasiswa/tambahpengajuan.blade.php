@@ -116,7 +116,8 @@
                             <div class="form-group row">
                                 <label class="col-sm-3 col-form-label">Nama Instansi*</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="nama_instansi" />
+                                    <select class="form-control nama_instansi select2" name="nama_instansi"
+                                        style="width: 100%"></select>
                                 </div>
                             </div>
                         </div>
@@ -124,15 +125,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-3 col-form-label">Kategori Instansi*</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" name="kategori_instansi_id">
-                                        <option value="1">Perusahaan Multinasional/Internasional</option>
-                                        <option value="2">Perusahaan Nasional</option>
-                                        <option value="3">Perusahaan Lokal (PT Lokal, CV, Agensi, Startup, dll)
-                                        </option>
-                                        <option value="4">Instansi Pemerintahan (OPD, Kementrian, dll)</option>
-                                        <option value="5">BUMN (Bank, Pegadaian, PLN, dll)</option>
-                                        <option value="6">BUMD (RSUD, BPR Daerah, dll)</option>
-                                    </select>
+                                    <select class="form-control kategori-instansi" name="kategori_instansi_id"></select>
                                 </div>
                             </div>
                         </div>
@@ -218,6 +211,8 @@
         </div>
     </div>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const fieldsets = document.querySelectorAll('fieldset');
@@ -250,10 +245,11 @@
                 }
                 showFieldset(currentFieldsetIndex);
             });
-
             document.querySelector('#jenis_kegiatan').addEventListener('change', function() {
-                const anggotaSection = document.getElementById('anggota_section');
-                const tambahAnggotaSection = document.getElementById('tambah_anggota_section');
+                const
+                    anggotaSection = document.getElementById('anggota_section');
+                const
+                    tambahAnggotaSection = document.getElementById('tambah_anggota_section');
                 if (this.value === 'individu') {
                     anggotaSection.style.display = 'none';
                     tambahAnggotaSection.style.display = 'none';
@@ -262,27 +258,27 @@
                     tambahAnggotaSection.style.display = 'block';
                 }
             });
-
-            const tambahAnggotaButton = document.querySelector('#tambah_anggota');
-            const anggotaSection = document.getElementById('anggota_section');
+            const
+                tambahAnggotaButton = document.querySelector('#tambah_anggota');
+            const
+                anggotaSection = document.getElementById('anggota_section');
             tambahAnggotaButton.addEventListener('click', function() {
                 if (anggotaSection.children.length < 4) {
                     const newAnggotaRow = document.createElement('div');
                     newAnggotaRow.classList.add('row');
-                    newAnggotaRow.innerHTML = `
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama (Anggota ${anggotaSection.children.length + 1})</label>
-                                <input type="text" class="form-control" placeholder="Nama Anggota" name="nama[]"/>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>NIM (Anggota ${anggotaSection.children.length + 1})</label>
-                                <input type="text" class="form-control" placeholder="NIM Anggota" name="nim[]"/>
-                            </div>
-                        </div>
-                    `;
+                    newAnggotaRow.innerHTML = ` <div class="col-md-6">
+        <div class="form-group">
+            <label>Nama (Anggota ${anggotaSection.children.length + 1})</label>
+            <input type="text" class="form-control" placeholder="Nama Anggota" name="nama[]" />
+        </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>NIM (Anggota ${anggotaSection.children.length + 1})</label>
+                <input type="text" class="form-control" placeholder="NIM Anggota" name="nim[]" />
+            </div>
+        </div>
+        `;
                     anggotaSection.appendChild(newAnggotaRow);
                 }
                 if (anggotaSection.children.length >= 4) {
@@ -336,6 +332,109 @@
                 }
             });
 
+        });
+
+
+        $('.kategori-instansi').select2({
+            placeholder: 'Pilih atau tambahkan kategori instansi',
+            tags: true,
+            createTag: function(params) {
+                var term = $.trim(params.term);
+                if (term === '') {
+                    return null;
+                }
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true
+                };
+            },
+            ajax: {
+                url: '/get-categories',
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.nama_kategori,
+                                id: item.id
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    </script>
+    <script>
+        // Inisialisasi select2 untuk nama_instansi
+        $('.nama_instansi').select2({
+            placeholder: 'Pilih atau tambahkan nama instansi',
+            tags: true,
+            createTag: function(params) {
+                var term = $.trim(params.term);
+                if (term === '') {
+                    return null;
+                }
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true
+                };
+            },
+            ajax: {
+                url: '/get-instansi',
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.nama_instansi,
+                                id: item.id
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    </script>
+    <script>
+        $('.kategori-instansi').select2({
+            placeholder: 'Pilih atau tambahkan kategori instansi',
+            tags: true,
+            createTag: function(params) {
+                var term = $.trim(params.term);
+                if (term === '') {
+                    return null;
+                }
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true
+                };
+            },
+            ajax: {
+                url: '/get-categories', // Pastikan URL ini sesuai dengan rute di Laravel
+                dataType: 'json',
+
+                delay: 100,
+                processResults: function(data) {
+                    console.log(data);
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item
+                                    .nama_kategori,
+                                id: item.id
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
         });
     </script>
     <style>

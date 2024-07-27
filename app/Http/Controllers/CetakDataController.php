@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AjuanMagang;
-use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\DataAjuanExport;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class CetakDataController extends Controller
 {
@@ -19,6 +20,8 @@ class CetakDataController extends Controller
 
         $activePage = 'pengajuan';
         $status = $request->input('status');
+        $semester = $request->input('semester');
+        $tahun = $request->input('tahun');
         $view = '';
 
         if (Auth::user()->role_id == '2') {
@@ -33,17 +36,82 @@ class CetakDataController extends Controller
             $query->where('status', $status);
         }
 
+        if (!empty($semester)) {
+            $query->where('semester', $semester);
+        }
+
+        if (!empty($tahun)) {
+            $query->where('tahun', $tahun);
+        }
+
         $dataajuan = $query->with(['users.units', 'instansis', 'dosenPembimbing', 'buktimagangs'])->orderBy('created_at', 'desc')->get();
 
-        return view($view, compact('dataajuan', 'activePage'));
+        return view($view, compact('dataajuan', 'activePage', 'semester', 'tahun'));
     }
-
 
     public function export(Request $request)
     {
         $semester = $request->input('semester');
         $tahun = $request->input('tahun');
 
-        return Excel::download(new DataAjuanExport($semester, $tahun), 'data-ajuan-magangSV.xlsx');
+        // Query data with filtering if parameters are present
+        $query = AjuanMagang::query()
+            ->with(['users', 'instansis', 'dosenPembimbing'])
+            ->select('id', 'semester', 'tahun', 'user_id', 'instansi_id', 'jenis_kegiatan', 'dosen_pembimbing');
+
+        if ($semester) {
+            $query->where('semester', $semester);
+        }
+
+        if ($tahun) {
+            $query->where('tahun', $tahun);
+        }
+
+        $data = $query->get();
+
+        return Excel::download(new class($data) implements FromCollection, WithHeadings
+        {
+            use Exportable;
+
+            protected $data;
+
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+
+            public function collection()
+            {
+                return $this->data->map(function ($item) {
+                    return [
+                        'No' => $item->id, // This will be the No column
+                        'Tahun Ajaran' => ($item->semester === 'ganjil' ? 'Ganjil' : 'Genap') . '/' . $item->tahun,
+                        'Nama Mahasiswa' => $item->users->name,
+                        'Prodi' => $item->users->units ? $item->users->units->nama_prodi : 'Prodi Tidak Ditemukan',
+                        'NIM' => $item->users->nim,
+                        'Dosen Pembimbing' => $item->dosenPembimbing ? $item->dosenPembimbing->name : 'Dosen Tidak Ditemukan',
+                        'Jenis Kegiatan' => $item->jenis_kegiatan === 'individu' ? 'Individu' : 'Kelompok',
+                        'Instansi' => $item->instansis ? $item->instansis->nama_instansi : 'Instansi Tidak Ditemukan',
+                    ];
+                });
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'No',
+                    'Tahun Ajaran',
+                    'Nama Mahasiswa',
+                    'Prodi',
+                    'NIM',
+                    'Dosen Pembimbing',
+                    'Jenis Kegiatan',
+                    'Instansi',
+                ];
+            }
+        }, 'data-ajuan-magang.xlsx');
     }
+
+
+
 }

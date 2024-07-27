@@ -295,8 +295,8 @@
                             <span class="menu-title">Dokumen Jawaban</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ $activePage === 'dokumen' ? 'active' : '' }}">
-                        <a class="nav-link" href="">
+                    <li class="nav-item {{ $activePage === 'tamplate' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('tamplate.index') }}">
                             <i class="icon-paper menu-icon"></i>
                             <span class="menu-title">Tamplate</span>
                         </a>

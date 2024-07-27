@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AjuanMagang extends Model
+class   AjuanMagang extends Model
 {
     use HasFactory;
 
@@ -45,7 +45,7 @@ class AjuanMagang extends Model
 
     public function anggotas()
     {
-        return $this->belongsToMany(Anggota::class, 'kelompok', 'id_ajuan_magang', 'id_anggota');
+        return $this->belongsToMany(Anggota::class, 'kelompoks', );
     }
 
     public function instansis()

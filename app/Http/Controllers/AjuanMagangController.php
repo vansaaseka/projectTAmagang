@@ -7,6 +7,7 @@ use App\Models\AjuanMagang;
 use App\Models\Proposal;
 use App\Models\Anggota;
 use App\Models\Instansi;
+use App\Models\KategoriInstansi;
 use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -48,12 +49,20 @@ class AjuanMagangController extends Controller
             }
         }
 
+        $kategoriInstansiId = $request->input('kategori_instansi_id');
+        if (!is_numeric($kategoriInstansiId)) {
+            $kategoriInstansi = KategoriInstansi::firstOrCreate(['nama_kategori' => $kategoriInstansiId],['user_id' => Auth::user()->id,]);
+            $kategoriInstansiId = $kategoriInstansi->id;
+
+        }
+
         $instansi = new Instansi();
         $instansi->nama_instansi = $request->input('nama_instansi');
-        $instansi->kategori_instansi_id = $request->input('kategori_instansi_id');
+        $instansi->kategori_instansi_id = $kategoriInstansiId;
         $instansi->no_telpon = $request->input('no_telpon');
         $instansi->alamat_surat = $request->input('alamat_surat');
         $instansi->alamat_instansi = $request->input('alamat_instansi');
+        $instansi->user_id = Auth::user()->id;
         $instansi->save();
 
         $proposal = new Proposal();
@@ -61,7 +70,7 @@ class AjuanMagangController extends Controller
             $file = $request->file('nama_file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $filepath = $file->storeAs('public/proposal', $filename);
-            $proposal->nama_file = 'proposal/' . $filename; // Simpan path lengkap ke database
+            $proposal->nama_file = 'proposal/' . $filename;
         } else {
             $proposal->nama_file = null;
         }
@@ -87,12 +96,10 @@ class AjuanMagangController extends Controller
         $ajuan->dosen_pembimbing = $request->input('dosen_pembimbing');
         $ajuan->user_id = auth()->user()->id;
 
-        // Convert anggotaIds to the desired format
         $formattedAnggotaIds = array_map(function ($id) {
             return ['id' => $id];
         }, $anggotaIds);
 
-        // Check if formattedAnggotaIds is not empty before assigning
         if (!empty($formattedAnggotaIds)) {
             $ajuan->anggota_id = json_encode($formattedAnggotaIds);
         }
@@ -101,4 +108,20 @@ class AjuanMagangController extends Controller
 
         return redirect()->route('viewsuccess')->with('success', 'Ajuan magang berhasil diajukan!');
     }
+
+
+    public function getCategories()
+    {
+    $categoriesUmum = KategoriInstansi::whereNull('user_id')->get();
+    $categoriesUser = KategoriInstansi::where('user_id', Auth::user()->id)->get();
+    $categories = $categoriesUmum->merge($categoriesUser);
+    return response()->json($categories);
+    }
+    public function getInstansi()
+    {
+        $instansis = Instansi::where('user_id', Auth::user()->id)->get();
+        return response()->json($instansis);
+    }
+
+
 }

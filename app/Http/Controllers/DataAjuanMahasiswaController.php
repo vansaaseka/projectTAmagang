@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class DataAjuanMahasiswaController extends Controller
 {
@@ -198,6 +201,11 @@ class DataAjuanMahasiswaController extends Controller
 
             if (Auth::user()->role_id == 3) {
                 $dataajuan->update(['status' => 'approve']);
+
+                $this->exportDocxPengantar($id);
+                return Redirect::route('export.docx.pengantar', ['id' => $id])->with('success', 'Pengajuan berhasil disetujui.');
+
+
             } else if (Auth::user()->role_id == 4) {
                 $dataajuan->update(['status' => 'approve']);
             }
@@ -211,6 +219,179 @@ class DataAjuanMahasiswaController extends Controller
 
         return redirect()->back()->withErrors(['unauthorized' => 'Anda tidak memiliki izin untuk melakukan tindakan ini.']);
     }
+
+    public function exportDocxPengantar($id)
+    {
+        $dataajuan = AjuanMagang::findOrFail($id);
+
+        if ($dataajuan->jenis_kegiatan == 'individu') {
+
+            $templateProcessor = new TemplateProcessor(public_path('Surat_Pengantar_Individu.docx'));
+            $templateProcessor = new TemplateProcessor('Surat_Pengantar_Individu.docx');
+            $dataTemplate = [
+                'alamatsuratpengantar' => $dataajuan->instansis->alamat_surat,
+                'alamatInstansi' => $dataajuan->instansis->alamat_instansi,
+                'namaketuakelompokindividu' => $dataajuan->users->name,
+                'nimketuakelompokindividu' => $dataajuan->users->nim,
+                'namaprodi' => $dataajuan->users->units->nama_prodi,
+                'judulproposal' => $dataajuan->proposals->judul_proposal,
+                'namadospem' => $dataajuan->dosenPembimbing->name,
+                'tanggalawalmagang' => $dataajuan->tanggal_mulai,
+                'tanggalakhirmagang' => $dataajuan->tanggal_selesai,
+                'namaInstansi' => $dataajuan->instansis->nama_instansi,
+            ];
+
+            $templateProcessor->setValues($dataTemplate);
+
+
+            $fileName = $dataajuan->users->name .'_'. $dataajuan->proposals->judul_proposal.'_'.'Individu';
+            $templateProcessor->saveAs($fileName . '.docx');
+            return response()->download($fileName . '.docx')->deleteFileAfterSend(true);
+        }
+        elseif ($dataajuan->jenis_kegiatan == 'kelompok') {
+            $templateProcessor = new TemplateProcessor(public_path('Surat_Pengantar_Kelompok.docx'));
+
+            $dataTemplate = [
+                'namaketuakelompok' => $dataajuan->users->name,
+                'nimketua' => $dataajuan->users->nim,
+                'alamatsuratpengantar' => $dataajuan->instansis->alamat_surat,
+                'alamatinstansi' => $dataajuan->instansis->alamat_instansi,
+                'namaprodi' => $dataajuan->users->units->nama_prodi,
+                'tanggalawal' => $dataajuan->tanggal_mulai,
+                'tanggalakhir' => $dataajuan->tanggal_selesai,
+                'namadosen' => $dataajuan->dosenPembimbing->name,
+            ];
+
+            $templateProcessor->setValues($dataTemplate);
+
+            $anggotaList = [];
+            foreach ($dataajuan->anggotas as $index => $anggota) {
+                $anggotaList[] = [
+                    'nomor' => $index + 1,
+                    'namaanggota' => $anggota->nama,
+                    'nimanggota' => $anggota->nim,
+                    'judulproposal' => $dataajuan->proposals->judul_proposal,
+                    'namadosen' => $dataajuan->dosenPembimbing->name,
+                ];
+            }
+
+            // Assign values for anggota
+            for ($i = 1; $i <= 4; $i++) {
+                if (isset($anggotaList[$i - 1])) {
+                    $templateProcessor->setValues([
+                        "namaanggota_$i" => $anggotaList[$i - 1]['namaanggota'],
+                        "nimanggota_$i" => $anggotaList[$i - 1]['nimanggota'],
+                        "judulproposal" => $anggotaList[$i - 1]['judulproposal'],
+                        "namadosen" => $anggotaList[$i - 1]['namadosen'],
+                    ]);
+                } else {
+                    // If no member, set empty value
+                    $templateProcessor->setValues([
+                        "namaanggota_$i" => '',
+                        "nimanggota_$i" => '',
+                        "judulproposal" => '',
+                        "namadosen" => '',
+                    ]);
+                }
+            }
+
+            $fileName = $dataajuan->users->name .'_'. $dataajuan->proposals->judul_proposal.'_'.'Kelompok';
+            $templateProcessor->saveAs($fileName . '.docx');
+            return response()->download($fileName . '.docx')->deleteFileAfterSend(true);
+        }
+
+        abort(404, 'Document not found.');
+    }
+
+
+    public function exportDocxTugas($id)
+    {
+        $dataajuan = AjuanMagang::findOrFail($id);
+
+        if ($dataajuan->jenis_kegiatan == 'individu') {
+
+            $templateProcessor = new TemplateProcessor(public_path('STKMM_Individu.docx'));
+            $templateProcessor = new TemplateProcessor('STKMM_Individu.docx');
+            $dataTemplate = [
+                'alamatsuratpengantar' => $dataajuan->instansis->alamat_surat,
+                'alamatinstansi' => $dataajuan->instansis->alamat_instansi,
+                'namaketua' => $dataajuan->users->name,
+                'nimketua' => $dataajuan->users->nim,
+                'namaprodi' => $dataajuan->users->units->nama_prodi,
+                'judulproposal' => $dataajuan->proposals->judul_proposal,
+                'dospem' => $dataajuan->dosenPembimbing->name,
+                'tanggalawal' => $dataajuan->tanggal_mulai,
+                'tanggalakhir' => $dataajuan->tanggal_selesai,
+                'namainstansi' => $dataajuan->instansis->nama_instansi,
+                'updateat' => Carbon::parse($dataajuan->updated_at)->format('d-m-y'),
+            ];
+
+            $templateProcessor->setValues($dataTemplate);
+
+
+            $fileName = $dataajuan->users->name .'_'. $dataajuan->proposals->judul_proposal.'_'.'Individu';
+            $templateProcessor->saveAs($fileName . '.docx');
+            return response()->download($fileName . '.docx')->deleteFileAfterSend(true);
+        }
+        elseif ($dataajuan->jenis_kegiatan == 'kelompok') {
+            $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(public_path('STKMM_Kelompok.docx'));
+
+            $dataTemplate = [
+               'alamatsuratpengantar' => $dataajuan->instansis->alamat_surat,
+                'alamatinstansi' => $dataajuan->instansis->alamat_instansi,
+                'namaketua' => $dataajuan->users->name,
+                'nimketua' => $dataajuan->users->nim,
+                'namaprodi' => $dataajuan->users->units->nama_prodi,
+                'judulproposal' => $dataajuan->proposals->judul_proposal,
+                'dospem' => $dataajuan->dosenPembimbing->name,
+                'tanggalawal' => $dataajuan->tanggal_mulai,
+                'tanggalakhir' => $dataajuan->tanggal_selesai,
+                'namainstansi' => $dataajuan->instansis->nama_instansi,
+                'updateat' => Carbon::parse($dataajuan->updated_at)->format('d-m-y'),
+            ];
+
+            $templateProcessor->setValues($dataTemplate);
+            $anggotaList = [];
+            foreach ($dataajuan->anggotas as $index => $anggota) {
+                $anggotaList[] = [
+                    'nomor' => $index + 1,
+                    'namaanggota' => $anggota->nama,
+                    'nimanggota' => $anggota->nim,
+                    'judulproposal' => $dataajuan->proposals->judul_proposal,
+                    'namadosen' => $dataajuan->dosenPembimbing->name,
+                ];
+            }
+
+            for ($i = 1; $i <= 4; $i++) {
+                if (isset($anggotaList[$i - 1])) {
+                    $templateProcessor->setValues([
+                        "namaanggota_$i" => $anggotaList[$i - 1]['namaanggota'],
+                        "nimanggota_$i" => $anggotaList[$i - 1]['nimanggota'],
+                        "judulproposal" => $anggotaList[$i - 1]['judulproposal'],
+                        "namadosen" => $anggotaList[$i - 1]['namadosen'],
+                    ]);
+                } else {
+                    $templateProcessor->setValues([
+                        "namaanggota_$i" => '',
+                        "nimanggota_$i" => '',
+                        "judulproposal" => '',
+                        "namadosen" => '',
+                    ]);
+                }
+            }
+
+
+            $fileName = $dataajuan->users->name .'_'. $dataajuan->proposals->judul_proposal.'_'.'Kelompok';
+            $templateProcessor->saveAs($fileName . '.docx');
+            return response()->download($fileName . '.docx')->deleteFileAfterSend(true);
+        }
+
+        abort(404, 'Document not found.');
+    }
+
+
+
+
 
     public function store(Request $request, $id)
     {
