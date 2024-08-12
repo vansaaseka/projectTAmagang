@@ -31,6 +31,7 @@
                             <th>Prodi</th>
                             <th>Jenis Kegiatan</th>
                             <th>Status Ajuan</th>
+                            <th>Proposal</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -83,6 +84,10 @@
                                         @endif
                                     </td>
                                     <td>
+                                        <a href="{{ 'storage/' . $data->proposals->nama_file }}"
+                                            class="badge badge-info border-0" target="_blank">Proposal</a>
+                                    </td>
+                                    <td>
                                         <button class="btn btn-warning btn-sm" data-toggle="modal"
                                             data-target="#detailModal{{ $data->id }}"><i
                                                 class="fas fa-info-circle fa-sm"></i></button>
@@ -133,18 +138,9 @@
                                                                     <td>{{ $data->proposals->judul_proposal }}</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th>Nama Instansi</th>
+                                                                    <th>Instansi</th>
                                                                     <td>:</td>
                                                                     <td>{{ $data->instansis->nama_instansi }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>File Proposal</th>
-                                                                    <td>:</td>
-                                                                    <td>
-                                                                        <a href="{{ 'storage/' . $data->proposals->nama_file }}"
-                                                                            class="badge badge-info border-0"
-                                                                            target="_blank">Proposal</a>
-                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Pembimbing</th>
@@ -156,26 +152,6 @@
                                                                     <th>Bobot SKS</th>
                                                                     <td>:</td>
                                                                     <td>{{ $data->bobot_sks }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Instansi</th>
-                                                                    <td>:</td>
-                                                                    <td>{{ $data->instansis->nama_instansi }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Alamat Instansi</th>
-                                                                    <td>:</td>
-                                                                    <td>{{ $data->instansis->alamat_instansi }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Nomor Telp Instansi</th>
-                                                                    <td>:</td>
-                                                                    <td>{{ $data->instansis->no_telpon }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Alamat Surat</th>
-                                                                    <td>:</td>
-                                                                    <td>{{ $data->instansis->alamat_surat }}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Tanggal Mulai</th>

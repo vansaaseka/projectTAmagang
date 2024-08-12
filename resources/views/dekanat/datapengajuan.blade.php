@@ -17,6 +17,9 @@
                                 Proses Validasi Pimpinan SV</option>
                             <option value="siap download" {{ request('status') == 'siap download' ? 'selected' : '' }}>Siap
                                 Download</option>
+                            <option value="magang berlangsung"
+                                {{ request('status') == 'magang berlangsung' ? 'selected' : '' }}>
+                                Magang Berlangsung</option>
                             <option value="magang selesai" {{ request('status') == 'magang selesai' ? 'selected' : '' }}>
                                 Magang Selesai</option>
                         </select>

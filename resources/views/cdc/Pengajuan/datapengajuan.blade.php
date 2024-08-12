@@ -38,6 +38,7 @@
                             <th>Prodi</th>
                             <th>Jenis Kegiatan</th>
                             <th>Status Ajuan</th>
+                            <th>Proposal</th>
                             <th>Surat Selesai</th>
                             <th>Aksi</th>
                         </tr>
@@ -86,6 +87,10 @@
                                         @endif
                                     </td>
                                     <td>
+                                        <a href="{{ 'storage/' . $data->proposals->nama_file }}"
+                                            class="badge badge-info border-0" target="_blank">Proposal</a>
+                                    </td>
+                                    <td>
                                         @if (!empty($data->file_nilai) && !empty($data->laporan_akhir))
                                             <button class="btn btn-primary btn-sm" data-id="{{ $data->id }}"
                                                 data-toggle="modal"
@@ -94,7 +99,6 @@
                                             <p>-</p>
                                         @endif
                                     </td>
-
                                     <div class="modal fade" id="uploadSuratSelesai{{ $data->id }}" tabindex="-1">
                                         <div class="modal-dialog">
                                             <form action="{{ route('suratSelesai', $data->id) }}" method="POST"
@@ -308,15 +312,6 @@
                                                                     <th>Judul Kegiatan</th>
                                                                     <td>:</td>
                                                                     <td>{{ $data->proposals->judul_proposal }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>File Proposal</th>
-                                                                    <td>:</td>
-                                                                    <td>
-                                                                        <a href="{{ 'storage/' . $data->proposals->nama_file }}"
-                                                                            class="badge badge-info border-0"
-                                                                            target="_blank">Proposal</a>
-                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Pembimbing</th>

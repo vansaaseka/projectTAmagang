@@ -58,6 +58,7 @@
                                             <span class="badge badge-primary text-light">Magang Selesai</span>
                                         @endif
                                     </td>
+
                                     <td>
                                         @if (empty($data->komentar_status))
                                             <p>Tidak ada komentar</p>
@@ -70,11 +71,17 @@
                                             class="badge badge-info border-0" target="_blank">Proposal</a>
                                     </td>
                                     <td>
-                                        @if (empty($data->surat_tugas))
-                                            <p>-</p>
+                                        @if (optional($data->buktimagangs)->jawaban === 'ditolak')
+                                            <span class="badge badge-danger">{{ $data->buktimagangs->jawaban }}</span>
+                                        @elseif (optional($data->buktimagangs)->jawaban === 'diterima')
+                                            <span class="badge badge-success">{{ $data->buktimagangs->jawaban }}</span>
+                                            @if (empty($data->surat_tugas))
+                                            @else
+                                                <a href="{{ 'storage/surat_tugas/' . $data->surat_tugas }}"
+                                                    class="badge badge-info border-0" target="_blank">Surat Tugas</a>
+                                            @endif
                                         @else
-                                            <a href="{{ 'storage/surat_tugas/' . $data->surat_tugas }}"
-                                                class="badge badge-info border-0" target="_blank">Surat Tugas</a>
+                                            <p>-</p>
                                         @endif
                                     </td>
                                     <td>
@@ -316,8 +323,6 @@
             </div>
         </div>
     </div>
-
-
 @endsection
 
 @push('scripts')

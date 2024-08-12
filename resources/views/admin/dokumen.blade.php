@@ -22,6 +22,7 @@
                             <th>No</th>
                             <th>Nama Mahasiswa</th>
                             <th>Prodi</th>
+                            <th>Jenis Kegiatan</th>
                             <th>Instansi</th>
                             <th>Jawaban</th>
                             <th>File</th>
@@ -40,6 +41,15 @@
                                     <td>{{ $no++ }}</td>
                                     <td>{{ optional($data->users)->name }}</td>
                                     <td>{{ optional(optional($data->users)->units)->nama_prodi }}</td>
+                                    <td>
+                                        @if ($data->jenis_kegiatan === 'individu')
+                                            <label class="">Individu</label>
+                                        @elseif ($data->jenis_kegiatan === 'kelompok')
+                                            <button class="badge badge-primary border-0" data-id="{{ $data->id }}"
+                                                data-toggle="modal"
+                                                data-target="#modalKelompok{{ $data->id }}">Kelompok</button>
+                                        @endif
+                                    </td>
                                     <td>{{ optional($data->instansis)->nama_instansi }}</td>
                                     <td>
                                         @if (optional($data->buktimagangs)->jawaban === 'diterima')
@@ -63,14 +73,56 @@
                                             data-target="#detailModal{{ $data->id }}">
                                             <i class="fas fa-info-circle fa-sm"></i>
                                         </button>
-                                        @if (optional($data->buktimagangs)->jawaban === 'diterima' && empty($data->surat_tugas))
+                                        @if (optional($data->buktimagangs)->jawaban === 'diterima')
                                             <button type="button" class="btn btn-primary btn-sm edit-btn"
                                                 data-toggle="modal" data-target="#UploadFileModal{{ $data->id }}"
                                                 data-id="{{ $data->id }}"><i class="fas fa-sm fa-edit "></i></button>
-                                        @elseif (optional($data->buktimagangs)->jawaban === 'diterima')
                                             <a href="{{ route('export.docx.tugas', ['id' => $data->id]) }}"
                                                 class="btn btn-info btn-sm">Download</a>
+                                        @elseif (optional($data->buktimagangs)->jawaban === 'diterima')
                                         @endif
+                                        <!-- Modal Kelompok -->
+                                        <div class="modal fade" id="modalKelompok{{ $data->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editModalLabel">Daftar Kelompok</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @php
+                                                            $proditerlibatIds = json_decode($data->anggota_id, true);
+                                                        @endphp
+
+                                                        @if (!empty($proditerlibatIds))
+                                                            @php
+                                                                $jumlahId = count($proditerlibatIds);
+                                                            @endphp
+
+                                                            <!-- Tampilkan anggota kelompok -->
+                                                            @foreach ($proditerlibatIds as $index => $prodiItem)
+                                                                @php
+                                                                    $prodiId = $prodiItem['id'];
+                                                                    $prodi = App\Models\Anggota::find($prodiId);
+                                                                @endphp
+                                                                @if ($prodi)
+                                                                    <p class="m-0 font-weight-bold"> {{ $index + 1 }}.
+                                                                        {{ $prodi->nama }}</p>
+                                                                    <p class="m-0">NIM :{{ $prodi->nim }}</p>
+                                                                    @if (!$loop->last)
+                                                                        <br>
+                                                                    @endif
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <!-- Modal Detail -->
                                         <div class="modal fade" id="detailModal{{ $data->id }}" tabindex="-1"
                                             aria-labelledby="detailModalLabel" aria-hidden="true">
@@ -115,21 +167,6 @@
                                                                     <th>Instansi</th>
                                                                     <td>:</td>
                                                                     <td>{{ $data->instansis->nama_instansi }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Alamat Surat</th>
-                                                                    <td>:</td>
-                                                                    <td>{{ $data->instansis->alamat_surat }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Alamat Instansi</th>
-                                                                    <td>:</td>
-                                                                    <td>{{ $data->instansis->alamat_instansi }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>No Telp Instansi</th>
-                                                                    <td>:</td>
-                                                                    <td>{{ $data->instansis->no_telpon }}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Bobot SKS</th>
@@ -204,6 +241,7 @@
         $(document).ready(function() {
             var table = $('#tableData').DataTable({
                 "pageLength": 10,
+                "order": [[0, "desc"]], // Mengurutkan berdasarkan kolom pertama secara descending
                 "language": {
                     "lengthMenu": "Tampilkan _MENU_ entri",
                     "search": "Cari:",
@@ -222,7 +260,7 @@
 
             $('#filterJawaban').change(function() {
                 var filter = $(this).val().toLowerCase();
-                table.column(4).search(filter === 'semua' ? '' : filter).draw();
+                table.column(5).search(filter === 'semua' ? '' : filter).draw();
             });
         });
     </script>

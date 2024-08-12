@@ -1,7 +1,7 @@
 @extends('dekanat.layouts.main')
 
 @section('content')
-    <h2>Edit Profil Mahasiswa</h2>
+    <h2>Edit Profil Dekanat</h2>
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -78,19 +78,19 @@
 @endsection
 
 @section('scripts')
-<script>
-    function togglePasswordVisibility(fieldId) {
-        const field = document.getElementById(fieldId);
-        const icon = document.getElementById(fieldId + '-icon');
-        if (field.type === 'password') {
-            field.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
+    <script>
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
-    }
-</script>
+    </script>
 @endsection

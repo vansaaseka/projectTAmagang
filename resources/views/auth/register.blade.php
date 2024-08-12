@@ -30,7 +30,7 @@
                                 <img src="{{ asset('assets/landingpage/images/LogoSV1.png') }}" alt="logo">
                             </div>
                             <h4>Belum Punya Akun?</h4>
-                            <h6 class="font-weight-light">Silahkan membuat akun menggunakan akun gmail yang aktif</h6>
+                            <h6 class="font-weight-light">Silahkan membuat akun menggunakan SSO</h6>
                             <form id="registrationForm" action="{{ route('register.post') }}" method="POST">
                                 @csrf
                                 <div class="form-group">

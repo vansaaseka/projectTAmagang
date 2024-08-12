@@ -259,7 +259,7 @@
                         "previous": "&raquo"
                     }
                 },
-                "column                .Defs": [{
+                "columnDefs": [{
                         "width": "10%",
                         "targets": 0
                     },
@@ -292,8 +292,7 @@
                 });
             });
         });
-    </script>
-    <script>
+
         $(function() {
             $('.toggle-status').change(function() {
                 var id = $(this).data('id');

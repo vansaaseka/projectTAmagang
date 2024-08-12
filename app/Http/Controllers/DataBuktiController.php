@@ -69,4 +69,5 @@ class DataBuktiController extends Controller
 
         return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk melakukan aksi ini.');
     }
+
 }

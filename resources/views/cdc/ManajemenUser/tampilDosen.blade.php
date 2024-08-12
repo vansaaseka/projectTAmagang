@@ -9,13 +9,11 @@
                         <div class="header-title">
                             <h4 class="card-title">Daftar Dosen</h4>
                         </div>
-                        <button type="button" class="btn btn-success" data-toggle="modal"
-                            data-target="#modalTambahDosen">Tambah User</button>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalTambahDosen">Tambah User</button>
                     </div>
 
                     {{-- Modal Tambah --}}
-                    <div class="modal fade" id="modalTambahDosen" tabindex="-1" role="dialog"
-                        aria-labelledby="modalTambahDosenLabel" aria-hidden="true">
+                    <div class="modal fade" id="modalTambahDosen" tabindex="-1" role="dialog" aria-labelledby="modalTambahDosenLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -26,37 +24,30 @@
                                 </div>
                                 <div class="modal-body">
                                     <!-- Form Tambah Nama Dosen -->
-                                    <form id="formTambahDosen" action="{{ route('datadosen.store') }}" method="POST"
-                                        enctype="multipart/form-data">
+                                    <form id="formTambahDosen" action="{{ route('datadosen.store') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="form-group">
                                             <label for="name">Nama</label>
-                                            <input type="text" class="form-control" id="name" name="name"
-                                                placeholder="Masukkan Nama" required>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama" required autocomplete="off">
                                         </div>
                                         <div class="form-group">
                                             <label for="email">Email</label>
-                                            <input type="email" class="form-control" id="email" name="email"
-                                                placeholder="Masukkan Email" required>
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email" required autocomplete="off">
                                         </div>
                                         <div class="form-group">
-                                            <label for="nim">NIP</label>
-                                            <input type="text" class="form-control" id="nip" name="nip"
-                                                placeholder="Masukkan NIP" required>
+                                            <label for="nip">NIP</label>
+                                            <input type="text" class="form-control" id="nip" name="nip" placeholder="Masukkan NIP" required autocomplete="off">
                                         </div>
                                         <div class="form-group">
                                             <label for="no_wa">No WA</label>
-                                            <input type="number" class="form-control" id="no_wa" name="no_wa"
-                                                placeholder="Masukkan nomor WA" required>
+                                            <input type="number" class="form-control" id="no_wa" name="no_wa" placeholder="Masukkan nomor WA" required autocomplete="off">
                                         </div>
                                         <div class="form-group">
                                             <label for="password">Password</label>
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                placeholder="Masukkan Password" required>
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Password" required autocomplete="off">
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Batal</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                                             <button type="submit" class="btn btn-primary">Simpan</button>
                                         </div>
                                     </form>
@@ -88,25 +79,20 @@
                                             <td>{{ $data->email }}</td>
                                             <td>
                                                 <label class="switch">
-                                                    <input type="checkbox" class="toggle-status"
-                                                        data-id="{{ $data->id }}"
-                                                        {{ $data->status == 1 ? 'checked' : '' }}>
+                                                    <input type="checkbox" class="toggle-status" data-id="{{ $data->id }}" {{ $data->status == 1 ? 'checked' : '' }}>
                                                     <span class="slider round"></span>
                                                 </label>
                                             </td>
                                             <td class="text-center">
                                                 <!-- Button Edit -->
-                                                <button class="btn btn-sm btn-icon btn-primary mr-2" data-toggle="modal"
-                                                    data-target="#modalEditDosen{{ $data->id }}">
+                                                <button class="btn btn-sm btn-icon btn-primary mr-2" data-toggle="modal" data-target="#modalEditDosen{{ $data->id }}">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
                                                 <!-- Button Delete -->
-                                                <button type="button" class="btn btn-sm btn-icon btn-danger delete-btn"
-                                                    data-id="{{ $data->id }}">
+                                                <button type="button" class="btn btn-sm btn-icon btn-danger delete-btn" data-id="{{ $data->id }}">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
-                                                <form action="{{ route('datadosen.delete', $data->id) }}" method="POST"
-                                                    style="display: none;" id="deleteForm{{ $data->id }}">
+                                                <form action="{{ route('datadosen.delete', $data->id) }}" method="POST" style="display: none;" id="deleteForm{{ $data->id }}">
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
@@ -114,59 +100,43 @@
                                         </tr>
 
                                         {{-- Modal Edit --}}
-                                        <div class="modal fade" id="modalEditDosen{{ $data->id }}" tabindex="-1"
-                                            role="dialog" aria-labelledby="modalEditDosenLabel{{ $data->id }}"
-                                            aria-hidden="true">
+                                        <div class="modal fade" id="modalEditDosen{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditDosenLabel{{ $data->id }}" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="modalEditDosenLabel{{ $data->id }}">Edit Data Dosen
-                                                        </h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
+                                                        <h5 class="modal-title" id="modalEditDosenLabel{{ $data->id }}">Edit Data Dosen</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <!-- Form Edit Dosen -->
-                                                        <form id="formEditDosen{{ $data->id }}"
-                                                            action="{{ route('datadosen.update', ['id' => $data->id]) }}"
-                                                            method="POST" enctype="multipart/form-data">
+                                                        <form id="formEditDosen{{ $data->id }}" action="{{ route('datadosen.update', ['id' => $data->id]) }}" method="POST" enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="form-group">
                                                                 <label for="name">Nama</label>
-                                                                <input type="text" class="form-control" id="name"
-                                                                    name="name" value="{{ $data->name }}">
+                                                                <input type="text" class="form-control" id="name" name="name" value="{{ $data->name }}" autocomplete="off">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="nim">Email</label>
-                                                                <input type="text" class="form-control" id="email"
-                                                                    name="email" value="{{ $data->email }}">
+                                                                <label for="email">Email</label>
+                                                                <input type="email" class="form-control" id="email" name="email" value="{{ $data->email }}" autocomplete="off">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="nim">NIP</label>
-                                                                <input type="text" class="form-control" id="nip"
-                                                                    name="nip" value="{{ $data->nip }}">
+                                                                <label for="nip">NIP</label>
+                                                                <input type="text" class="form-control" id="nip" name="nip" value="{{ $data->nip }}" autocomplete="off">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="no_wa">Nomor WA</label>
-                                                                <input type="number" class="form-control" id="no_wa"
-                                                                    name="no_wa" value="{{ $data->no_wa }}">
+                                                                <input type="number" class="form-control" id="no_wa" name="no_wa" value="{{ $data->no_wa }}" autocomplete="off">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="password">Password (Biarkan kosong jika tidak
-                                                                    ingin mengubah)</label>
-                                                                <input type="password" class="form-control"
-                                                                    id="password" name="password"
-                                                                    placeholder="Masukkan Password Baru">
+                                                                <label for="password">Password (Biarkan kosong jika tidak ingin mengubah)</label>
+                                                                <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Password Baru" autocomplete="off">
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-dismiss="modal">Batal</button>
-                                                                <button type="submit"
-                                                                    class="btn btn-primary">Simpan</button>
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                                <button type="submit" class="btn btn-primary">Simpan</button>
                                                             </div>
                                                         </form>
                                                     </div>

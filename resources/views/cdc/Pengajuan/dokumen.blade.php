@@ -55,7 +55,7 @@
                                                         <span
                                                             class="badge badge-danger">{{ $data->buktimagangs->jawaban }}</span>
                                                     @else
-                                                        <span class="badge badge-warning">Belum ada jawaban</span>
+                                                        <span class="badge badge-secondary">Belum ada jawaban</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -91,6 +91,7 @@
         $(document).ready(function() {
             var table = $('#tableData').DataTable({
                 "pageLength": 10,
+                "order": [[0, "desc"]], // Mengurutkan berdasarkan kolom pertama secara descending
                 "language": {
                     "lengthMenu": "Tampilkan _MENU_ entri",
                     "search": "Cari:",

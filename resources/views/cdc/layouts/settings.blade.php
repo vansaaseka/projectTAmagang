@@ -1,7 +1,7 @@
 @extends('cdc.layouts.main')
 
 @section('content')
-    <h2>Edit Profil Mahasiswa</h2>
+    <h2>Edit Profil CDC</h2>
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}

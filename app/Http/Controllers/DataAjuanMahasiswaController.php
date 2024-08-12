@@ -352,11 +352,11 @@ class DataAjuanMahasiswaController extends Controller
 
             $templateProcessor->setValues($dataTemplate);
             $anggotaList = [];
-            foreach ($dataajuan->anggotas as $index => $anggota) {
+            foreach ($dataajuan->anggotas as $index => $anggotas) {
                 $anggotaList[] = [
                     'nomor' => $index + 1,
-                    'namaanggota' => $anggota->nama,
-                    'nimanggota' => $anggota->nim,
+                    'namaanggota' => $anggotas->nama,
+                    'nimanggota' => $anggotas->nim,
                     'judulproposal' => $dataajuan->proposals->judul_proposal,
                     'namadosen' => $dataajuan->dosenPembimbing->name,
                 ];
@@ -380,7 +380,6 @@ class DataAjuanMahasiswaController extends Controller
                 }
             }
 
-
             $fileName = $dataajuan->users->name .'_'. $dataajuan->proposals->judul_proposal.'_'.'Kelompok';
             $templateProcessor->saveAs($fileName . '.docx');
             return response()->download($fileName . '.docx')->deleteFileAfterSend(true);
@@ -388,9 +387,6 @@ class DataAjuanMahasiswaController extends Controller
 
         abort(404, 'Document not found.');
     }
-
-
-
 
 
     public function store(Request $request, $id)

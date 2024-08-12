@@ -40,7 +40,7 @@
                                                 placeholder="Masukkan Email" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="nim">NIP</label>
+                                            <label for="nip">NIP</label>
                                             <input type="text" class="form-control" id="nip" name="nip"
                                                 placeholder="Masukkan NIP" required>
                                         </div>
@@ -183,6 +183,7 @@
         </div>
     </div>
 @endsection
+
 <style>
     .switch {
         position: relative;
@@ -274,7 +275,7 @@
                     [10, 25, 50, 75, 100],
                     [10, 25, 50, 75, 100]
                 ],
-                "language": {
+                "language": [{
                     "lengthMenu": "Tampilkan _MENU_ entri",
                     "zeroRecords": "Data tidak ditemukan",
                     "info": "Halaman _PAGE_ dari _PAGES_",
@@ -287,8 +288,9 @@
                         "next": "&laquo;",
                         "previous": "&raquo"
                     }
-                },
-                "column                .Defs": [{
+                }
+                ],
+                "columnDefs": [{
                         "width": "10%",
                         "targets": 0
                     },
